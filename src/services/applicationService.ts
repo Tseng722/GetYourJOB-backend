@@ -1,0 +1,62 @@
+import prisma from '../prisma/client'
+
+// Application 輸入資料結構
+export interface CreateApplicationData {
+    companyTitle?: string
+    jobTitle: string
+    applicationDate?: Date
+    status?:
+    | 'inProgress'
+    | 'applyed'
+    | 'firstInterview'
+    | 'secondInterview'
+    | 'thirdInterview'
+    | 'fourthInterview'
+    | 'fifthInterview'
+    | 'offer'
+    | 'rejected'
+    resourceId?: string
+    applyById?: string
+    website?: string
+    howManyApplicant?: number
+    jobDescription?: string
+    coverLetter?: string
+    question?: string
+    analyzedJDResponse?: string
+    atsScoreResponse?: number
+    atsDescriptionResponse?: string
+    resumeSuggestionResponse?: string
+}
+
+export async function createApplication(
+    userId: number,
+    data: CreateApplicationData
+) {
+    // 先確認使用者存在
+    const user = await prisma.users.findUnique({
+        where: { id: userId },
+    })
+
+    if (!user) {
+        throw new Error('無效的 userId，使用者不存在')
+    }
+
+    // 建立新的 application
+    const application = await prisma.applications.create({
+        data: {
+            ...data,
+            status: data.status ?? 'inProgress',
+            userId: userId
+            // user: { connect: { id: userId } }, // ✅ 正規關聯方式
+        },
+    })
+
+    return application
+}
+
+export async function getApplicationsByUser(userId: number) {
+    return await prisma.applications.findMany({
+        where: { userId: userId },
+        orderBy: { applicationDate: 'desc' },
+    })
+}
