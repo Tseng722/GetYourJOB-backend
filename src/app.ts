@@ -6,14 +6,26 @@ import applicationRoutes from './routes/applicationRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN as string;
 
-
-app.use(cors());
+app.use(cors({
+    origin: FRONTEND_ORIGIN, // 前端的來源
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ['Content-Type', "Authorization"],
+    credentials: true
+}));
 app.use(express.json());
+
+process.on('uncaughtException', err => {
+    console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', err => {
+    console.error('Unhandled Rejection:', err);
+});
 
 // Routes
 // app.use('/api/items', itemRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/application', applicationRoutes);
 
