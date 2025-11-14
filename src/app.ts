@@ -3,6 +3,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import applicationRoutes from './routes/applicationRoutes';
+import analysisRoutes from './routes/analysisRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
@@ -24,9 +25,9 @@ process.on('unhandledRejection', err => {
 });
 
 // Routes
-// app.use('/api/items', itemRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/analysis', analysisRoutes);
 app.use('/api/application', applicationRoutes);
 
 // Global error handler (should be after routes)
