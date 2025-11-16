@@ -1,4 +1,5 @@
 import prisma from '../prisma/client'
+import { Applications } from '@prisma/client';
 
 // Application 輸入資料結構
 export interface CreateApplicationData {
@@ -60,3 +61,32 @@ export async function getApplicationsByUser(userId: number) {
         orderBy: { applicationDate: 'desc' },
     })
 }
+
+export async function getApplicationsByIdService(id: number) {
+    return await prisma.applications.findUnique({
+        where: { id: id }
+    })
+}
+
+export const updateApplicationService = async (
+    id: number,
+    data: Partial<Applications>
+) => {
+    const exist = await prisma.applications.findUnique({
+        where: { id },
+    });
+
+    if (!exist) {
+        throw new Error('Application not found');
+    }
+    if (data.applicationDate) {
+        data.applicationDate = new Date(data.applicationDate);
+    }
+
+    const updated = await prisma.applications.update({
+        where: { id },
+        data,
+    });
+
+    return updated;
+};
