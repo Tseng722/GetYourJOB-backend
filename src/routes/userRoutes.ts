@@ -6,6 +6,7 @@ const router = Router();
 
 
 router.get('/getUserProfile', authMiddleware, userController.getUserProfile);
+router.get('/getUserExperience', authMiddleware, userController.getUserExperience);
 
 // // 更新使用者個人經驗
 router.put('/updateUserProfile', authMiddleware, userController.updateUserProfile);

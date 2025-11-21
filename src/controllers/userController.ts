@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma/client';
-import userService from "../services/userService"; // 若有使用 service 可保留
+import * as userService from "../services/userService"; // 若有使用 service 可保留
 
 interface AuthenticatedRequest extends Request {
     user?: {
@@ -71,6 +71,27 @@ export const updateUserProfile = async (req: AuthenticatedRequest, res: Response
             res.status(404).json({ error: "User not found" });
             return;
         }
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getUserExperience = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ message: "未授權：找不到使用者 ID" });
+            return;
+        }
+
+
+        const experience = await userService.getUserExperience(userId);
+        if (!experience) {
+            res.status(404).json({ message: "使用者不存在" });
+            return;
+        }
+
+        res.json(experience);
+    } catch (err: any) {
+        console.error("getUserExperience Error:", err);
         res.status(500).json({ error: err.message });
     }
 };

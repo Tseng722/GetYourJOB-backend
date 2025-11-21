@@ -20,4 +20,15 @@ async function registerUser(userData: RegisterUserData): Promise<Users> {
     return user
 }
 
+export async function getUserExperience(id: number) {
+    return await prisma.users.findUnique({
+        where: { id: id },
+        select: {
+            id: true,
+            experience: true,
+        },
+    })
+}
+
+
 export default { registerUser };
