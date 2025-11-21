@@ -51,9 +51,9 @@ ${analyzeResumePrompt}
 };
 
 // ------------------- 分析 JD -------------------
-export const analyzeJD = async ({ jd = '' }: { jd?: string }): Promise<string> => {
+export const analyzeJD = async ({ jobDescription = '' }: { jobDescription?: string }): Promise<string> => {
     const analyzeJDPrompt = process.env.ANALYZE_JD_PROMPT || '';
-    const promptText = `${analyzeJDPrompt}\n這是公司職缺描述：${jd}`;
+    const promptText = `${analyzeJDPrompt}\n這是公司職缺描述：${jobDescription}`;
 
     const geminiBody = {
         contents: [
@@ -96,8 +96,8 @@ export const analyzeATS = async ({ experience = '', jd = '' }: AnalyzeInput): Pr
             timeout: 20000,
         });
 
-        const ATSResult = gResp.data?.candidates?.[0]?.content?.parts?.[0]?.text || '未收到建議';
-        return ATSResult.trim();
+        const atsResult = gResp.data?.candidates?.[0]?.content?.parts?.[0]?.text || '未收到建議';
+        return atsResult.trim();
     } catch (error: any) {
         console.error('Gemini error:', error.response?.data || error.message);
         throw new Error('呼叫 Gemini 發生錯誤');

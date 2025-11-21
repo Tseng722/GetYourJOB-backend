@@ -21,11 +21,11 @@ export const handleAnalyzeResume = async (req: Request, res: Response): Promise<
 // 分析 JD
 export const handleAnalyzeJD = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { jd = '' } = req.body as { jd?: string };
+        const { jobDescription = '' } = req.body as { jobDescription?: string };
 
-        const JDResult = await geminiService.analyzeJD({ jd });
+        const analyzedJDResponse = await geminiService.analyzeJD({ jobDescription });
 
-        res.json({ JDResult });
+        res.json({ analyzedJDResponse });
     } catch (error) {
         console.error('分析錯誤:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -40,9 +40,9 @@ export const handleAnalyzeATS = async (req: Request, res: Response): Promise<voi
             jd?: string;
         };
 
-        const ATSResult = await geminiService.analyzeATS({ experience, jd });
+        const atsResult = await geminiService.analyzeATS({ experience, jd });
 
-        res.json({ ATSResult });
+        res.json({ atsResult });
     } catch (error) {
         console.error('分析錯誤:', error);
         res.status(500).json({ error: 'Internal Server Error' });
