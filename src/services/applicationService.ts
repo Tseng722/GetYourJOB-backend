@@ -41,14 +41,20 @@ export async function createApplication(
     if (!user) {
         throw new Error('無效的 userId，使用者不存在')
     }
+    if (data.applicationDate) {
+        data.applicationDate = new Date(data.applicationDate);
+    }
 
     // 建立新的 application
     const application = await prisma.applications.create({
         data: {
             ...data,
             status: data.status ?? 'inProgress',
-            userId: userId
+            // userId: userId
             // user: { connect: { id: userId } }, // ✅ 正規關聯方式
+            user: {
+                connect: { id: userId }
+            }
         },
     })
 
