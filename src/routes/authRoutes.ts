@@ -8,7 +8,6 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 
-// 驗證 Token（也可以改成用 middleware）
-router.get('/verify', authMiddleware, verifyToken);
+router.get('/verify', verifyToken);
 
 export default router;
