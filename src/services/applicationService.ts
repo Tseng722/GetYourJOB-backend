@@ -22,6 +22,7 @@ export interface CreateApplicationData {
     howManyApplicant?: number
     jobDescription?: string
     coverLetter?: string
+    resume?: string
     question?: string
     analyzedJDResponse?: string
     atsScoreResponse?: number
@@ -44,6 +45,7 @@ export async function createApplication(
     if (data.applicationDate) {
         data.applicationDate = new Date(data.applicationDate);
     }
+    data.howManyApplicant = Number(data.howManyApplicant);
 
     // 建立新的 application
     const application = await prisma.applications.create({
@@ -88,6 +90,7 @@ export const updateApplicationService = async (
     if (data.applicationDate) {
         data.applicationDate = new Date(data.applicationDate);
     }
+    data.howManyApplicant = Number(data.howManyApplicant);
 
     const updated = await prisma.applications.update({
         where: { id },
