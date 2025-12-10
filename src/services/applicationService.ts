@@ -99,3 +99,21 @@ export const updateApplicationService = async (
 
     return updated;
 };
+
+export const deleteApplicationService = async (
+    id: number,
+) => {
+    const exist = await prisma.applications.findUnique({
+        where: { id },
+    });
+
+    if (!exist) {
+        throw new Error('Application not found');
+    }
+    const deleted = await prisma.applications.delete({
+        where: { id },
+    });
+
+    return deleted;
+};
+
