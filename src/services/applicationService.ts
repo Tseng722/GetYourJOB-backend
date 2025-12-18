@@ -8,7 +8,7 @@ export interface CreateApplicationData {
     applicationDate?: Date
     status?:
     | 'inProgress'
-    | 'applyed'
+    | 'applied'
     | 'firstInterview'
     | 'secondInterview'
     | 'thirdInterview'
@@ -91,6 +91,33 @@ export const updateApplicationService = async (
         data.applicationDate = new Date(data.applicationDate);
     }
     data.howManyApplicant = Number(data.howManyApplicant);
+
+    if (data.status && data.status !== exist.status) {
+        if (data.status === 'applied') {
+            data.applicationDate = new Date();
+        }
+        if (data.status === 'firstInterview') {
+            data.firstInterviewDate = new Date();
+        }
+        if (data.status === 'secondInterview') {
+            data.secondInterviewDate = new Date();
+        }
+        if (data.status === 'thirdInterview') {
+            data.thirdInterviewDate = new Date();
+        }
+        if (data.status === 'fourthInterview') {
+            data.fourthInterviewDate = new Date();
+        }
+        if (data.status === 'fifthInterview') {
+            data.fifthInterviewDate = new Date();
+        }
+        if (data.status === 'offer') {
+            data.offerDate = new Date();
+        }
+        if (data.status === 'rejected') {
+            data.rejectedDate = new Date();
+        }
+    }
 
     const updated = await prisma.applications.update({
         where: { id },
