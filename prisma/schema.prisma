@@ -41,6 +41,7 @@ model Applications {
   website                  String?
   howManyApplicant         Int?
   jobDescription           String?
+  resume                   String?
   coverLetter              String?
   qusetion                 String?
   analyzedJDResponse       String?
@@ -67,7 +68,7 @@ model Applications {
 
 enum Status {
   inProgress
-  applyed
+  applied
   firstInterview
   secondInterview
   thirdInterview
