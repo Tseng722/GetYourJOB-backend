@@ -1,5 +1,5 @@
 import express from 'express'
-import { createApplication, getUserApplication, updateApplication, getApplicationById, deleteApplication, } from '../controllers/applicationController'
+import { createApplication, getUserApplication, updateApplication, getApplicationById, deleteApplication, getApplicationMetrics, } from '../controllers/applicationController'
 import { authMiddleware } from '../middlewares/authMiddleware'
 
 const router = express.Router()
@@ -12,5 +12,6 @@ router.post('/createApplication', authMiddleware, createApplication)
 router.put('/updateApplication', authMiddleware, updateApplication)
 router.delete('/deleteApplication/:id', authMiddleware, deleteApplication)
 router.get('/getApplicationById/:id', authMiddleware, getApplicationById)
+router.get('/metrics', authMiddleware, getApplicationMetrics)
 
 export default router

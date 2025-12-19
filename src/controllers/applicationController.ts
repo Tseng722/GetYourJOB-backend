@@ -96,3 +96,23 @@ export const deleteApplication = async (req: Request, res: Response) => {
         return res.status(500).json({ message: error.message || 'Server error' });
     }
 };
+
+export const getApplicationMetrics = async (req: AuthenticatedRequest, res: Response) => {
+
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const metrics = await applicationService.getApplicationMetricsService(userId);
+
+        return res.json(metrics);
+    } catch (error) {
+        console.error("Get application metrics error:", error);
+        return res.status(500).json({ message: "Failed to get metrics" });
+    }
+
+
+};

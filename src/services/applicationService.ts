@@ -144,3 +144,115 @@ export const deleteApplicationService = async (
     return deleted;
 };
 
+export const getApplicationMetricsService = async (userId: number) => {
+
+    const now = new Date();
+    const d = new Date(now);
+    const day = d.getDay(); // 0 = Sunday
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
+    const startOfWeek = new Date(d.setDate(diff));
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const [
+        appliedCount,
+        thisWeek,
+        thisMonth,
+        screeningCount,
+        interviewCount,
+        rejectedCount,
+        offerCount,
+        ghostingCount,
+    ] = await Promise.all([
+        prisma.applications.count({
+            where: {
+                userId,
+                applicationDate: { not: null },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                applicationDate: { gte: startOfWeek },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                applicationDate: { gte: startOfMonth },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                firstInterviewDate: { not: null },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                OR: [
+                    // { firstInterviewDate: { not: null } },
+                    { secondInterviewDate: { not: null } },
+                    { thirdInterviewDate: { not: null } },
+                    { fourthInterviewDate: { not: null } },
+                    { fifthInterviewDate: { not: null } },
+                ],
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                rejectedDate: { not: null },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                offerDate: { not: null },
+            },
+        }),
+        prisma.applications.count({
+            where: {
+                userId,
+                status: 'applied',
+            },
+        }),
+    ]);
+
+    // ----- calculations (percentage) -----
+    const appliedToScreening =
+        appliedCount === 0
+            ? 0
+            : Math.round((screeningCount / appliedCount) * 100);
+
+    const screeningToInterview =
+        screeningCount === 0
+            ? 0
+            : Math.round((interviewCount / screeningCount) * 100);
+    const interviewToOffer =
+        interviewCount === 0
+            ? 0
+            : Math.round((offerCount / interviewCount) * 100);
+
+    const rejectionRate =
+        appliedCount === 0
+            ? 0
+            : Math.round((rejectedCount / appliedCount) * 100);
+
+    const ghostingRate =
+        appliedCount === 0
+            ? 0
+            : Math.round((ghostingCount / appliedCount) * 100);
+
+    return {
+        appliedCount,
+        thisWeek,
+        thisMonth,
+        appliedToScreening,
+        screeningToInterview,
+        interviewToOffer,
+        rejectionRate,
+        ghostingRate,
+    };
+
+};
